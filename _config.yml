@@ -1,0 +1,19 @@
+title: BotDeFi.io
+description: Guides to earn with DeFi bots — safe, repeatable, automated.
+url: https://botdefi.io
+timezone: UTC
+markdown: kramdown
+theme: null
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
+
+collections:
+  posts:
+    output: true
+
+permalink: /:year/:month/:day/:title/
+defaults:
+  - scope: { path: "" }
+    values:
+      layout: default
