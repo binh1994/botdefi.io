@@ -1,26 +1,69 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title | default: "BotDeFi" }}</title>
+
+  <meta name="description" content="{{ page.description | default: site.description | default: 'BotDeFi — DeFi bot guides & automation.' }}">
+  <meta property="og:title" content="{{ page.title | default: site.title | default: 'BotDeFi' }}">
+  <meta property="og:description" content="{{ page.description | default: site.description | default: 'BotDeFi — DeFi bot guides & automation.' }}">
+  <meta property="og:image" content="{{ page.image | default: '/assets/og.jpg' }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="/assets/style.css" />
   {% seo %}
-  <link rel="stylesheet" href="/assets/style.css">
+
   {% include analytics.html %}
 </head>
+
 <body class="theme-orange">
   <header class="site-header">
-    <a href="/" class="brand">BotDeFi<span>.io</span></a>
-    <nav><a href="/">Home</a></nav>
+    <div class="container header-inner">
+      <div class="brand">
+        <a href="{{ site.url | default: '/' }}" class="brand-link" aria-label="BotDeFi home">
+          <strong class="brand-text">Bot<span class="brand-accent">DeFi</span></strong>
+        </a>
+        <p class="brand-sub">{{ site.description | default: "Practical guides to earn with DeFi bots — safe & automated." }}</p>
+      </div>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/posts/" class="nav-link">Guides</a>
+      </nav>
+    </div>
+
+    <!-- Hero ad area: ad include shows banner just below header -->
+    <div class="hero-ad">
+      {% include ad.html %}
+    </div>
   </header>
 
-  <main class="container">
+  <main class="container main-content" role="main">
     {{ content }}
   </main>
 
   <footer class="site-footer">
-    <p>© {{ site.time | date: '%Y' }} {{ site.title }}</p>
-    <small>Guides only — not financial advice.</small>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <p>© {{ "now" | date: "%Y" }} {{ site.title | default: "BotDeFi" }} — Not financial advice.</p>
+      </div>
+      <div class="footer-right">
+        <p>
+          <a href="https://afternic.com/domain/botdefi.io" target="_blank" rel="noopener">Domain for sale — botdefi.io</a>
+        </p>
+      </div>
+    </div>
   </footer>
+
+  <!-- optional script area for small inline JS (e.g. ad callbacks) -->
+  <script>
+    // small accessibility helper: mark ad containers as present
+    document.addEventListener("DOMContentLoaded", function() {
+      var ads = document.querySelectorAll(".ad-banner, .hero-ad");
+      ads.forEach(function(a){ a.setAttribute("aria-hidden","false"); });
+    });
+  </script>
 </body>
 </html>
