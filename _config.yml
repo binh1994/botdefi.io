@@ -1,54 +1,16 @@
 title: "BotDeFi"
-description: "BotDeFi — practical, actionable DeFi bot strategies, automation guides and on-chain insights."
-baseurl: ""
+description: "Practical DeFi bot strategies, automation guides and on-chain insights."
+baseurl: ""    # leave empty unless site is served from subpath
 url: "https://botdefi.io"
 
-# markdown engine
 markdown: kramdown
 
-# theme + plugins
-theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
 
-# Google Analytics (GA4 Measurement ID)
-google_analytics: "G-DNS1L38XQ9"
-
-# defaults for posts (helps SEO/front-matter consistency)
-defaults:
-  - scope:
-      path: ""      # applies to all files
-      type: "posts"
-    values:
-      layout: "post"
-      author: "BotDeFi Team"
-
-# files/folders to exclude from the site build/output
+# Collections, pagination, etc. (tùy chỉnh thêm nếu cần)
 exclude:
-  - Gemfile
   - Gemfile.lock
   - node_modules
-  - vendor
-  - README.md
-
-# optional: feed config (jekyll-feed)
-feed:
-  path: feed.xml
-
-# tidy url settings (recommended)
-permalink: /:year/:month/:day/:title/
-
-# small performance / build tweaks
-kramdown:
-  input: GFM
-  hard_breaks: false
-  parse_block_html: true
-
-# Helpful for some deployments
-keep_files: [".git", ".github"]
-
-# Note:
-# - GA script is included via _includes/analytics.html (recommended).
-# - Ad code should be placed in _includes/ad.html and included in layouts (e.g. default/post).
