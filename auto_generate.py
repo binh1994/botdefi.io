@@ -1,141 +1,153 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-import os, random, datetime, textwrap
-
-SITE_DOMAIN = "botdefi.io"
-
-# Ảnh an toàn (không chặn hotlink) — ưu tiên picsum/pexels
-IMAGE_POOLS = [
-    "https://images.pexels.com/photos/8372683/pexels-photo-8372683.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "https://images.pexels.com/photos/8370677/pexels-photo-8370677.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "https://images.pexels.com/photos/8370753/pexels-photo-8370753.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "https://images.pexels.com/photos/6770612/pexels-photo-6770612.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "https://picsum.photos/1600/900?random=5182",
-]
-
-# Backlink “mềm” (luân phiên 6–8 link/ngày)
-FRIENDS = [
-    "https://botweb3ai.com", "https://botblockchain.io", "https://metaversebot.io",
-    "https://nftgameai.com", "https://bottradingai.com", "https://botgame.io",
-    "https://aiesports.io", "https://botesports.com", "https://esportsai.io",
-    "https://pronftgame.com", "https://hubgaming.io"
-]
-
-GUIDE_TITLES = [
-    "Hướng dẫn kiếm lợi nhuận với DCA Bot trong DeFi",
-    "Cách setup Grid Bot trên DEX để tạo dòng tiền đều",
-    "Tối ưu lợi nhuận bằng Yield Aggregator + Auto-Compound",
-    "Chiến lược Bot Arbitrage trên AMM (dành cho người mới)",
-    "Quản trị rủi ro cho Bot DeFi: cài đặt stop, max drawdown",
-    "Săn APR an toàn: Bot quay vòng farm & compound",
-    "Tự động hóa chiến lược LP với Rebalancing Bot",
-    "Backtest bot lợi nhuận: cách làm & đọc kết quả đúng",
-    "Đổi thưởng & bảo toàn vốn: chiến lược 50/50 với Bot",
-]
-
-SECTIONS = [
-    "Chuẩn bị ví & mạng lưới",
-    "Cấu hình bot & thông số an toàn",
-    "Chiến lược vận hành từng ngày",
-    "Mẹo tăng lợi nhuận & giảm rủi ro",
-]
-
-BULLETS_POOL = [
-    "Dùng ví phụ, hạn mức nhỏ khi thử chiến lược mới.",
-    "Luôn bật slippage hợp lý và giới hạn khối lượng.",
-    "Ghi log lệnh/balance mỗi 24h để theo dõi drawdown.",
-    "Ưu tiên DEX/Pool có thanh khoản dày & phí rẻ.",
-    "Tránh token kém thanh khoản hoặc biến động sốc.",
-    "Tách vốn: 60% chiến lược chính, 40% sandbox.",
-    "Luôn có kế hoạch thoát khi APR giảm đột ngột.",
-    "Dùng oracles/price feed để hạn chế MEV trượt giá.",
-]
-
-def choose_title():
-    return random.choice(GUIDE_TITLES)
-
-def choose_image():
-    return random.choice(IMAGE_POOLS)
-
-def choose_bullets(n=4):
-    return random.sample(BULLETS_POOL, k=min(n, len(BULLETS_POOL)))
-
-def choose_friends(k=7):
-    return random.sample(FRIENDS, k=min(k, len(FRIENDS)))
-
-def slugify(s):
-    return "".join(c.lower() if c.isalnum() else "-" for c in s).strip("-")
-
-def make_markdown():
-    today = datetime.date.today()
-    title = choose_title()
-    desc = "Practical DeFi bot walkthrough for stable, compounding returns."
-    image = choose_image()
-
-    # Nội dung chính (markdown thuần, không Liquid)
-    intro = textwrap.dedent(f"""
-    Trong bài hướng dẫn này, bạn sẽ **thiết lập bot DeFi** theo từng bước để tạo dòng tiền đều đặn.
-    Tư duy trọng tâm: **an toàn vốn trước – tối ưu sau**. Hãy bắt đầu với khối lượng nhỏ và mở rộng khi
-    chiến lược chứng minh hiệu quả.
-    """).strip()
-
-    # 4 mục nội dung với bullet tùy biến
-    sections_md = []
-    for s in SECTIONS:
-        bullets = "\n".join([f"- {b}" for b in choose_bullets(4)])
-        sections_md.append(f"### {s}\n{bullets}\n")
-    sections_md = "\n".join(sections_md)
-
-    # “Pro tip” khác nhau để tránh trùng lặp cảm giác
-    pro_tip = random.choice([
-        "Ưu tiên pool có **TVL cao** và volume ổn định; bot sẽ khớp lệnh mượt hơn.",
-        "Đặt lịch **rebalancing** theo mốc 24–48h thay vì chạy liên tục để giảm phí.",
-        "Luôn có **quy tắc dừng** khi APY/volume tụt mạnh hoặc tin tức rủi ro.",
-    ])
-
-    friends = " • ".join([f"[{u.replace('https://','')}]({u})" for u in choose_friends()])
-
-    body = f"""
-_{pro_tip}_
-
-{intro}
-
-## Key Insights
-- Chọn bot phù hợp: **DCA**, **Grid**, **Arb**, hoặc **LP-Rebalance** tuỳ khẩu vị rủi ro.
-- Tách vốn – mỗi chiến lược một ví để quản trị rủi ro.
-- Ghi chép & backtest giúp bạn biết điều gì thực sự hiệu quả.
-
-{sections_md}
-
-## Friendly Network
-{friends}
+"""
+Auto generator for botdefi.io
+- Jekyll/Netlify compatible
+- Safe Liquid escaping so includes (ad.html / analytics.html) render correctly
+- DeFi-focused topics, Pexels/Unsplash images, backlinks to network
 """
 
-    fm = f"""---
+import os
+import datetime
+import random
+import re
+import uuid
+
+# ---
+# Configuration: change SITE_DOMAIN if needed or set env SITE_DOMAIN
+# ---
+SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "").strip() or "botdefi.io"
+
+DOMAINS = [
+    'bottradingai.com', 'botgame.io', 'metaversebot.io', 'nftgameai.com',
+    'hubgaming.io', 'botdefi.io', 'esportsai.io', 'nftgamepro.com',
+    'botesports.com', 'aiesports.io', 'pronftgame.com', 'botplay.io',
+    'botweb3ai.com', 'botblockchain.io'
+]
+
+# Image pools (Pexels direct CDN + safe fallbacks)
+IMAGES = {
+    'botdefi.io': [
+        "https://images.pexels.com/photos/6770612/pexels-photo-6770612.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&fit=crop",
+        "https://images.pexels.com/photos/6770615/pexels-photo-6770615.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&fit=crop",
+        "https://source.unsplash.com/1200x630/?defi,crypto",
+        "https://picsum.photos/1200/630?random=4021"
+    ],
+    # default fallback
+    'default': [
+        "https://source.unsplash.com/1200x630/?crypto,blockchain",
+        "https://picsum.photos/1200/630?random=123456"
+    ]
+}
+
+# DeFi-focused titles (rotating)
+TOPICS = [
+    "DeFi Bot Strategies for Consistent Yield in 2025",
+    "How to Build a Safe DeFi Market-Making Bot",
+    "Managing MEV and Front-running Risks for Automation",
+    "Cross-chain Liquidity Bots: Practical Implementation",
+    "Automated Yield Aggregation: Risk Controls & Tools",
+    "On-chain Signals: Building Reliable Execution Triggers",
+    "Position Sizing and Risk Limits for DeFi Bots"
+]
+
+# --------------------------
+# Helper functions
+# --------------------------
+def slugify(text: str) -> str:
+    s = text.lower()
+    s = re.sub(r'[^a-z0-9\s-]', '', s)
+    s = re.sub(r'\s+', '-', s.strip())
+    return s[:60]
+
+def pick_image(domain: str) -> str:
+    pool = IMAGES.get(domain, IMAGES['default'])
+    return random.choice(pool)
+
+def pick_backlinks(domain: str) -> str:
+    others = [d for d in DOMAINS if d != domain]
+    random.shuffle(others)
+    sel = others[:4]
+    return "\n".join([f"- [{d}](https://{d})" for d in sel])
+
+# --------------------------
+# Build markdown content
+# --------------------------
+def generate_md(domain: str):
+    today = datetime.date.today().isoformat()
+    title = random.choice(TOPICS)
+    image = pick_image(domain)
+    desc = f"{title} — practical DeFi bot guides from {domain}"
+    backlinks = pick_backlinks(domain)
+    unique_id = uuid.uuid4().hex[:8]
+    slug = slugify(title) + "-" + unique_id
+
+    # NOTE: to emit literal Liquid tags we double the braces in f-string:
+    #   - '{% include ad.html %}'  => written as '{{% include ad.html %}}' inside f-string
+    #   - '{{ p.title }}' needed as '{{{{ p.title }}}}' inside f-string
+    md = f"""---
 layout: post
 title: "{title}"
 date: {today}
 author: "BotDeFi Team"
 description: "{desc}"
 image: "{image}"
-tags: [DeFi, Bot, Guide]
 ---
-"""
-    return fm + "\n" + body.strip() + "\n"
 
+_In today’s fast-moving DeFi landscape, automation and disciplined risk controls are essential. Below are practical insights for builders and traders in 2025…_
+
+{{% include ad.html %}}
+
+### Quick overview
+
+Automation in DeFi can streamline execution, reduce manual errors, and capture cross-protocol opportunities — but only with layered risk controls.
+
+**Key themes covered:**
+- Execution reliability and monitoring  
+- MEV-aware designs and front-running mitigation  
+- Practical position sizing and gas-aware routing
+
+---
+
+## Detailed points
+
+1) **Execution & Observability**  
+Reliable infra (retry, idempotency, on-chain receipts) matters. Combine on-chain event watchers with off-chain sanity checks.
+
+2) **MEV & Protection**  
+Design strategies to minimize extractable value exposure — use private relays, transaction bundlers, or time-weighted execution where appropriate.
+
+3) **Composability & Liquidity**  
+Leverage protocol composability for routing and liquidity, but measure slippage and gas tradeoffs.
+
+---
+
+## Related Articles (internal)
+{{% for p in site.posts limit:4 %}}
+  {{% if p.url != page.url %}}
+  - [{{{{ p.title }}}}]({{{{ p.url }}}})
+  {{% endif %}}
+{{% endfor %}}
+
+## Friendly Network
+{backlinks}
+
+{{% include analytics.html %}}
+"""
+
+    filename = f"_posts/{today}-{slug}.md"
+    return filename, md
+
+# --------------------------
+# Main
+# --------------------------
 def main():
+    domain = SITE_DOMAIN or os.path.basename(os.getcwd())
     os.makedirs("_posts", exist_ok=True)
-    content = make_markdown()
-    # tránh đè bài trong ngày: slug theo tiêu đề
-    title_line = [l for l in content.splitlines() if l.startswith("title:")][0]
-    raw_title = title_line.split(":",1)[1].strip().strip('"')
-    slug = slugify(raw_title)[:80]
-    today = datetime.date.today().isoformat()
-    fn = f"_posts/{today}-{slug}.md"
-    with open(fn, "w", encoding="utf-8") as f:
+    path, content = generate_md(domain)
+    with open(path, "w", encoding="utf-8") as f:
         f.write(content)
-    print("Wrote:", fn)
+    print("✅ Post generated:", path)
 
 if __name__ == "__main__":
     main()
