@@ -1,85 +1,26 @@
 ---
 layout: default
 ---
-
-<article class="post container">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">{{ page.date | date: "%B %d, %Y" }} • {{ page.author }}</p>
-  </header>
+<article class="post">
+  <h1>{{ page.title }}</h1>
+  <p class="meta">{{ page.date | date: "%B %d, %Y" }} — {{ page.author }}</p>
 
   {% if page.image %}
-  <figure class="post-hero">
-    <img src="{{ page.image }}" alt="{{ page.title }}" class="featured" loading="lazy" width="1200" height="630">
-  </figure>
+  <img src="{{ page.image }}" alt="{{ page.title }}" class="post-img hero-img">
   {% endif %}
 
-  <div class="content post-content">
+  <div class="post-content">
     {{ content }}
   </div>
 
-  <!-- mid-article ad slot -->
-  <div class="ad-block mid-ad">
+  <div class="mid-ad">
     {% include ad.html %}
   </div>
 
-  <!-- Related & Internal Links -->
-  <section class="related container">
-    <h3>Related Articles</h3>
-    <ul class="related-list">
-      {% for p in site.posts limit:4 %}
-        {% if p.url != page.url %}
-          <li class="related-item"><a href="{{ p.url }}">{{ p.title }}</a></li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </section>
-
-  <!-- Friendly network/backlinks (soft) -->
-  <section class="friendly container">
-    <h4>Friendly Network</h4>
-    <p class="friendly-links">
-      <a href="https://botweb3ai.com">botweb3ai.com</a> ·
-      <a href="https://botblockchain.io">botblockchain.io</a> ·
-      <a href="https://metaversebot.io">metaversebot.io</a> ·
-      <a href="https://nftgameai.com">nftgameai.com</a>
-    </p>
-  </section>
-
-  <!-- CTA / domain for sale -->
-  <div class="domain-cta container">
-    <p>Interested in this premium domain? <a href="https://afternic.com/domain/botdefi.io" target="_blank" rel="noopener">Buy botdefi.io</a></p>
+  <div class="friendly">
+    <h3>Friendly Network</h3>
+    {% if page.backlinks %}
+      {{ page.backlinks }}
+    {% endif %}
   </div>
 </article>
-
-<style>
-/* Scoped styles for post layout (override or move to assets/style.css if preferred) */
-.container{ max-width: 960px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
-.post-header { text-align: left; margin-bottom: 12px; }
-.post-title { font-size: 28px; line-height: 1.12; margin: 0 0 6px; color: #fff; }
-.post-meta { color: #d0c7c0; font-size: 13px; margin:0 0 16px; }
-
-.post-hero { margin: 0 0 18px; border-radius: 12px; overflow: hidden; }
-.featured { width: 100%; height: auto; display:block; border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
-
-.post-content { color: #efecea; line-height: 1.75; font-size: 16px; }
-.post-content h2, .post-content h3 { margin-top: 24px; color: #fff; }
-.post-content p { margin: 14px 0; }
-
-.ad-block.mid-ad { margin: 28px 0; text-align:center; }
-
-.related { margin-top: 36px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.04); }
-.related-list { list-style: none; padding: 0; margin: 8px 0 0 0; display:flex; flex-direction:column; gap:8px; }
-.related-item a { color: #ff9a3c; text-decoration:none; font-weight:600; }
-
-.friendly { margin-top: 22px; color: #e8ddd2; font-size:14px; }
-.friendly-links a { color: #ffc79b; text-decoration:none; }
-
-.domain-cta { margin: 26px 0 60px 0; background: linear-gradient(90deg, rgba(255,122,24,0.08), rgba(255,179,71,0.04)); padding:14px; border-radius:10px; text-align:center; }
-.domain-cta a { color: #ff7a18; font-weight:700; text-decoration:none; }
-
-@media (max-width:720px){
-  .post-title{ font-size:22px; }
-  .container{ padding:14px; }
-}
-</style>
