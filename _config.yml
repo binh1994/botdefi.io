@@ -1,16 +1,15 @@
 title: "BotDeFi"
-description: "Practical DeFi bot strategies, automation guides and on-chain insights."
-baseurl: ""    # leave empty unless site is served from subpath
+description: "BotDeFi — guides, strategies and AI-powered insights for DeFi bots."
+baseurl: ""
 url: "https://botdefi.io"
-
 markdown: kramdown
+theme: minima
 
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
 
-# Collections, pagination, etc. (tùy chỉnh thêm nếu cần)
 exclude:
+  - Gemfile
   - Gemfile.lock
-  - node_modules
