@@ -1,9 +1,9 @@
-name: autogen
+name: Auto Generate Daily AI Post
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 9 * * *"  # 9:00 UTC mỗi ngày
+    - cron: '0 9 * * *'   # 09:00 UTC (~16:00 VN)
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,8 +12,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository (with credentials for push)
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -21,22 +24,59 @@ jobs:
           python-version: '3.11'
 
       - name: Install deps
-        run: python -m pip install --upgrade pip
-
-      - name: Generate new post
-        run: python auto_generate.py
-
-      - name: Commit and push
         run: |
-          git config user.name "AutoPublisher"
+          python -m pip install --upgrade pip
+          # nếu có requirements.txt, bỏ dòng comment bên dưới:
+          # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # --- Viết includes (ad + analytics) trực tiếp từ biến môi trường ---
+      - name: Create includes (ad + analytics)
+        env:
+          GA_ID: "G-DNS1L38XQ9"
+          AD_SNIPPET: '<script async data-cfasync="false" src="//pl27914938.effectivegatecpm.com/e8bf08180bd7c986609bff7085685830/invoke.js"></script><div id="container-e8bf08180bd7c986609bff7085685830"></div>'
+        run: |
+          mkdir -p _includes
+          # analytics include (Google Analytics gtag)
+          cat > _includes/analytics.html <<'GA_HTML'
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${GA_ID}');
+</script>
+GA_HTML
+          # ad include (raw snippet)
+          cat > _includes/ad.html <<'AD_HTML'
+${AD_SNIPPET}
+AD_HTML
+
+      - name: Run generator
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}    # nếu dùng OpenAI
+          SITE_DOMAIN: "botdefi.io"
+          GA_ID: "G-DNS1L38XQ9"
+          AD_SNIPPET: '<script async data-cfasync="false" src="//pl27914938.effectivegatecpm.com/e8bf08180bd7c986609bff7085685830/invoke.js"></script><div id="container-e8bf08180bd7c986609bff7085685830"></div>'
+        run: |
+          # chạy generator python — script phải ghi _posts/YYYY-MM-DD-slug.md
+          python auto_generate.py
+
+      - name: Commit generated files
+        run: |
+          git config user.name "Auto Bot"
           git config user.email "auto@users.noreply.github.com"
-          git add _posts || true
+          # thêm _posts và _includes (trong trường hợp includes mới cần commit)
+          git add _posts _includes || true
           if git diff --cached --quiet; then
-            echo "No changes"; exit 0
+            echo "No new files to commit"
+          else
+            git commit -m "📰 Auto post $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "commit failed or nothing to commit"
+            git push origin HEAD:main
           fi
-          git commit -m "Auto new post $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push
 
-      - name: Ping Google (best-effort)
+      - name: Ping Google sitemap
+        env:
+          DOMAIN: botdefi.io
         run: |
-          curl -s "https://www.google.com/ping?sitemap=https://botdefi.io/sitemap.xml" || true
+          echo "Pinging https://www.google.com/ping?sitemap=https://$DOMAIN/sitemap.xml"
+          curl -s "https://www.google.com/ping?sitemap=https://$DOMAIN/sitemap.xml" || true
