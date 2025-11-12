@@ -1,0 +1,33 @@
+---
+layout: default
+---
+
+<article class="post">
+  <h1>{{ page.title }}</h1>
+  <p class="meta">{{ page.date | date: "%B %d, %Y" }} · {{ site.title }}</p>
+
+  {% include ad.html %}
+
+  {% if page.image %}
+  <p><img class="hero-img" src="{{ page.image }}" alt="{{ page.title }}"></p>
+  {% endif %}
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  <div class="mid-ad">{% include ad.html %}</div>
+
+  <section class="friendly">
+    <h3>Friendly Network</h3>
+    <p>
+      <a href="https://botweb3ai.com">botweb3ai.com</a> ·
+      <a href="https://botblockchain.io">botblockchain.io</a> ·
+      <a href="https://metaversebot.io">metaversebot.io</a> ·
+      <a href="https://nftgameai.com">nftgameai.com</a> ·
+      <a href="https://bottradingai.com">bottradingai.com</a> ·
+      <a href="https://botgame.io">botgame.io</a> ·
+      <a href="https://hubgaming.io">hubgaming.io</a>
+    </p>
+  </section>
+</article>
